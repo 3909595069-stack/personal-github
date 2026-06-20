@@ -272,8 +272,14 @@ void main() {
       ctn.addEventListener('mouseleave', this._mouseLeaveHandler);
     }
 
-    // 把 WebGL canvas 插入 DOM
-    ctn.appendChild(this.gl.canvas);
+    // 把 WebGL canvas 插入 DOM，定位与原始粒子 Canvas 一致
+    const glCanvas = this.gl.canvas;
+    glCanvas.style.position = 'absolute';
+    glCanvas.style.inset = '0';
+    glCanvas.style.width = '100%';
+    glCanvas.style.height = '100%';
+    glCanvas.style.zIndex = '0';
+    ctn.insertBefore(glCanvas, ctn.firstChild);
 
     // 启动动画
     this._animate();
