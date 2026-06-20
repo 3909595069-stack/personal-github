@@ -590,3 +590,73 @@ section.visible {
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* ============================================
+   响应式设计
+   ============================================ */
+
+/* ---- 平板及以下 (≤1024px) ---- */
+@media (max-width: 1024px) {
+  section {
+    padding: var(--space-xl) var(--space-lg);
+    min-height: auto;
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .portrait-placeholder {
+    width: 180px;
+    height: 180px;
+    order: -1; /* 照片放上面 */
+  }
+
+  .works-grid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+  }
+
+  .toolkit-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 500px;
+  }
+}
+
+/* ---- 手机 (≤480px) ---- */
+@media (max-width: 480px) {
+  :root {
+    font-size: 15px;
+  }
+
+  section {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .declaration-line {
+    font-size: 1rem;
+    padding-left: var(--space-md);
+  }
+
+  .toolkit-grid {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+  }
+
+  .contact-links {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .timeline-item {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+}
