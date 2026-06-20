@@ -2,7 +2,7 @@
    scroll-animations.js
    用 Intersection Observer 实现滚动渐显
    每个section进入视口→加 .visible 类
-   每个section离开视口→移除 .visible 类
+   .visible 一旦加上就保留，不再移除
    ============================================ */
 
 const ScrollAnimations = {
