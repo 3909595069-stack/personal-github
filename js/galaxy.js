@@ -10,10 +10,8 @@ import {
   Program,
   Mesh,
   Color,
+  Triangle,
 } from 'https://unpkg.com/ogl@1.0.11/src/index.js';
-
-// 全屏三角形 — OGL extras/Triangle.js
-import { Triangle } from 'https://unpkg.com/ogl@1.0.11/src/extras/Triangle.js';
 
 export default class Galaxy {
   constructor(container, options = {}) {
