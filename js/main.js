@@ -6,10 +6,12 @@
   'use strict';
 
   /* ---- Hero 银河背景 ---- */
+  // 使用 OGL WebGL Galaxy（ReactBits 移植版）
+  // Galaxy 类在 galaxy.js 中定义，OGL 库由 CDN 加载
   const particleCanvas = document.getElementById('particle-canvas');
   let galaxy = null;
 
-  if (particleCanvas) {
+  if (particleCanvas && typeof window.Galaxy === 'function') {
     galaxy = new window.Galaxy(particleCanvas, {
       starSpeed: 0.5,
       density: 1.4,
