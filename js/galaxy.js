@@ -13,6 +13,7 @@ import {
   Triangle,
 } from 'https://unpkg.com/ogl@1.0.11/src/index.js';
 
+export { Galaxy as default };
 export default class Galaxy {
   constructor(container, options = {}) {
     this.container = container;
