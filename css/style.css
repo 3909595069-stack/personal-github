@@ -345,3 +345,151 @@ section.visible {
   font-size: 0.95rem;
   color: var(--text-secondary);
 }
+
+/* ============================================
+   Section 3: Works · 放映区
+   ============================================ */
+
+#works {
+  background-color: var(--bg-surface);
+}
+
+#works .section-label,
+#works .section-title {
+  text-align: center;
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---- 作品卡片 ---- */
+
+.work-card {
+  background: var(--bg-deep);
+  border: 1px solid var(--bg-elevated);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.work-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-4px);
+}
+
+.work-card-preview {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.work-card:hover .work-card-preview {
+  transform: scale(1.03);
+}
+
+.work-card-placeholder {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--space-md);
+}
+
+/* 未来替换为真实截图时：.work-card-preview img { width:100%; height:100%; object-fit:cover; } */
+
+.work-card-info {
+  padding: var(--space-lg);
+}
+
+.work-card-title {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+
+.work-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  line-height: 1.6;
+}
+
+.work-card-link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent-blue);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.work-card:hover .work-card-link {
+  color: var(--text-primary);
+}
+
+/* ============================================
+   Section 4: Toolkit · 兵器谱区
+   ============================================ */
+
+#toolkit {
+  background-color: var(--bg-deep);
+}
+
+#toolkit .section-label,
+#toolkit .section-title {
+  text-align: center;
+}
+
+.toolkit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tool-card {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  background: var(--bg-surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.tool-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow);
+}
+
+.tool-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-md);
+}
+
+.tool-name {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.tool-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
