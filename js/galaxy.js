@@ -10,13 +10,10 @@ import {
   Program,
   Mesh,
   Color,
-  Geometry,
-} from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/index.js';
+} from 'https://unpkg.com/ogl@1.0.11/src/index.js';
 
-// 全屏三角形 — OGL v1.0.11 extras/Triangle.js 的等价实现
-// Triangle 类在 index.js 中已通过 export { Triangle } 重新导出
-// 这里直接用 import 更清晰，但 Geometry 手动构建也同样效果
-import { Triangle } from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/extras/Triangle.js';
+// 全屏三角形 — OGL extras/Triangle.js
+import { Triangle } from 'https://unpkg.com/ogl@1.0.11/src/extras/Triangle.js';
 
 export default class Galaxy {
   constructor(container, options = {}) {
