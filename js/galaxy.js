@@ -11,14 +11,12 @@ import {
   Mesh,
   Color,
   Geometry,
-} from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/index.mjs';
+} from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/index.js';
 
 // 全屏三角形 — OGL v1.0.11 extras/Triangle.js 的等价实现
-// Triangle 类本质就是一个覆盖全屏的 Geometry
-const triangleGeometry = new Geometry(null, {
-  position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
-  uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
-});
+// Triangle 类在 index.js 中已通过 export { Triangle } 重新导出
+// 这里直接用 import 更清晰，但 Geometry 手动构建也同样效果
+import { Triangle } from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/extras/Triangle.js';
 
 export default class Galaxy {
   constructor(container, options = {}) {
@@ -225,11 +223,8 @@ void main() {
       gl.clearColor(0, 0, 0, 1);
     }
 
-    // 全屏三角形几何体（GL上下文绑定后创建）
-    const geometry = new Geometry(gl, {
-      position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
-      uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
-    });
+    // 全屏三角形几何体 — 使用 OGL 内建的 Triangle 类
+    const geometry = new Triangle(gl);
 
     // 着色器程序
     const program = new Program(gl, {
