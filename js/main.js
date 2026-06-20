@@ -10,7 +10,19 @@
   let galaxy = null;
 
   if (particleCanvas) {
-    galaxy = new window.Galaxy(particleCanvas);
+    galaxy = new window.Galaxy(particleCanvas, {
+      starSpeed: 0.5,
+      density: 1.4,
+      hueShift: 140,
+      speed: 1,
+      glowIntensity: 0.65,
+      saturation: 0,
+      mouseRepulsion: true,
+      repulsionStrength: 2,
+      twinkleIntensity: 0.3,
+      rotationSpeed: 0.1,
+      transparent: true,
+    });
   }
 
   /* ---- Footer 星空 ---- */
