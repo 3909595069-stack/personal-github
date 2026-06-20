@@ -10,9 +10,9 @@
   --bg-elevated:  #1E1E28;
 
   /* ----- 文字 ----- */
-  --text-primary:   #EEEAE0;
-  --text-secondary: #787680;
-  --text-muted:     #4A4855;
+  --text-primary:   #F2F2F2;  /* 接近纯白，暗底上更清晰 */
+  --text-secondary: #A8A6B0;  /* 辅助文字更亮更易读 */
+  --text-muted:     #5C5A66;  /* 弱化文字也不可过暗 */
 
   /* ----- 强调 ----- */
   --accent-blue:  #64B5F6;
@@ -23,18 +23,18 @@
   --error:   #E57373;
 
   /* ----- 字体 ----- */
-  --font-display: 'ZCOOL QingKe HuangYou', 'Noto Sans SC', sans-serif;
-  --font-body:    'Noto Sans SC', 'Inter', sans-serif;
+  --font-display: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body:    'Noto Sans SC', 'Inter', 'PingFang SC', sans-serif;
   --font-poetic:  'Noto Serif SC', serif;
   --font-mono:    'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 
   /* ----- 间距 ----- */
   --space-xs:  0.25rem;
   --space-sm:  0.5rem;
-  --space-md:  1rem;
-  --space-lg:  2rem;
-  --space-xl:  4rem;
-  --space-2xl: 8rem;
+  --space-md:  0.75rem;  /* 原 1rem */
+  --space-lg:  1.5rem;   /* 原 2rem */
+  --space-xl:  3rem;     /* 原 4rem */
+  --space-2xl: 5rem;     /* 原 8rem */
 
   /* ----- 圆角 ----- */
   --radius-sm: 4px;
@@ -79,7 +79,7 @@ body {
   font-family: var(--font-body);
   background-color: var(--bg-deep);
   color: var(--text-primary);
-  line-height: 1.8;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -128,18 +128,20 @@ section.visible {
 /* ===== 分区编号标签 ===== */
 .section-label {
   font-family: var(--font-display);
-  font-size: 0.875rem;
-  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
   color: var(--accent-blue);
   text-transform: uppercase;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
 }
 
 /* ===== 分区标题 ===== */
 .section-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  margin-bottom: var(--space-xl);
-  letter-spacing: 0.05em;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  letter-spacing: 0.02em;
 }
 
 /* ===== 工具类 ===== */
@@ -178,10 +180,10 @@ section.visible {
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  line-height: 1.15;
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
   margin-bottom: var(--space-lg);
   color: var(--text-primary);
   text-shadow: 0 0 80px rgba(100, 181, 246, 0.2);
@@ -313,7 +315,7 @@ section.visible {
 
 .timeline {
   max-width: 600px;
-  margin: var(--space-xl) auto 0;
+  margin: var(--space-lg) auto 0;
   max-height: 0;
   overflow: hidden;
   transition: max-height var(--duration-slow) var(--ease-out),
@@ -525,15 +527,15 @@ section.visible {
 /* ---- 星辰语录 ---- */
 
 .cosmic-quote {
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl);
 }
 
 .cosmic-quote p {
   font-family: var(--font-poetic);
-  font-size: clamp(1rem, 2vw, 1.35rem);
-  line-height: 2.2;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-md);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 2;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
   opacity: 0;
   transform: translateY(10px);
   animation: quote-fade-in 1s var(--ease-out) forwards;
