@@ -157,20 +157,11 @@
     </section>
   </main>
 
-  <!-- OGL CJS→全局垫片 -->
-  <script>
-    // OGL 发布的是 CJS 格式，浏览器 <script> 无法直接加载
-    // 这一段小垫片模拟 module.exports，把 OGL 暴露为 window.OGL
-    var module = { exports: {} };
-    var exports = module.exports;
+  <!-- ReactBits Galaxy 背景 (ES Module) -->
+  <script type="module">
+    import Galaxy from './js/galaxy.js';
+    window.Galaxy = Galaxy;
   </script>
-  <script src="https://unpkg.com/ogl@0.0.34/dist/ogl.js"></script>
-  <script>
-    window.OGL = module.exports;
-    module = undefined;
-    exports = undefined;
-  </script>
-  <script src="js/galaxy.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/scroll-animations.js"></script>
   <script src="js/main.js"></script>

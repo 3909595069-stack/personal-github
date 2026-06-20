@@ -1,12 +1,28 @@
 /* ============================================
    galaxy.js — ReactBits Galaxy 背景（纯 JS 移植）
    基于 DavidHDev/react-bits Galaxy.tsx
-   使用 OGL (OGL库) + 原始 GLSL 着色器
+   使用 OGL v1.0.11 + 原始 GLSL 着色器
+   通过 ES module import 加载 OGL
    ============================================ */
 
-class Galaxy {
-  constructor(canvas, options = {}) {
-    this.canvas = canvas;
+import {
+  Renderer,
+  Program,
+  Mesh,
+  Color,
+  Geometry,
+} from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/index.mjs';
+
+// 全屏三角形 — OGL v1.0.11 extras/Triangle.js 的等价实现
+// Triangle 类本质就是一个覆盖全屏的 Geometry
+const triangleGeometry = new Geometry(null, {
+  position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
+  uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
+});
+
+export default class Galaxy {
+  constructor(container, options = {}) {
+    this.container = container;
 
     // 参数（对齐 ReactBits GalaxyProps 默认值）
     this.focal = options.focal || [0.5, 0.5];
@@ -189,51 +205,43 @@ void main() {
   }
 
   _init() {
-    // 确保 OGL 已加载
-    if (typeof OGL === 'undefined') {
-      console.error('Galaxy: OGL library not loaded. Include ogl.min.js before galaxy.js');
-      return;
-    }
-
-    const ctn = this.canvas.parentElement;
+    const ctn = this.container;
     if (!ctn) return;
 
     // 创建 OGL Renderer
-    this.renderer = new OGL.Renderer({
+    const renderer = new Renderer({
       alpha: this.transparent,
       premultipliedAlpha: false,
     });
-    this.gl = this.renderer.gl;
+    this.renderer = renderer;
+    const gl = renderer.gl;
+    this.gl = gl;
 
     if (this.transparent) {
-      this.gl.enable(this.gl.BLEND);
-      this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-      this.gl.clearColor(0, 0, 0, 0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.clearColor(0, 0, 0, 0);
     } else {
-      this.gl.clearColor(0, 0, 0, 1);
+      gl.clearColor(0, 0, 0, 1);
     }
 
-    this._resize();
-    this._resizeHandler = () => this._resize();
-    window.addEventListener('resize', this._resizeHandler, false);
-
-    // 全屏三角形几何体 — OGL 无 Triangle 类，用 Geometry 自建
-    const geometry = new OGL.Geometry(this.gl, {
+    // 全屏三角形几何体（GL上下文绑定后创建）
+    const geometry = new Geometry(gl, {
       position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
       uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
     });
 
-    // 程序
-    this.program = new OGL.Program(this.gl, {
+    // 着色器程序
+    const program = new Program(gl, {
       vertex: this.vertexShader,
       fragment: this.fragmentShader,
       uniforms: {
         uTime: { value: 0 },
         uResolution: {
-          value: new OGL.Color(
-            this.gl.canvas.width,
-            this.gl.canvas.height,
-            this.gl.canvas.width / this.gl.canvas.height,
+          value: new Color(
+            gl.canvas.width,
+            gl.canvas.height,
+            gl.canvas.width / gl.canvas.height,
           ),
         },
         uFocal: { value: new Float32Array(this.focal) },
@@ -256,8 +264,10 @@ void main() {
         uTransparent: { value: this.transparent },
       },
     });
+    this.program = program;
 
-    this.mesh = new OGL.Mesh(this.gl, { geometry, program: this.program });
+    const mesh = new Mesh(gl, { geometry, program });
+    this.mesh = mesh;
 
     // 鼠标事件
     if (this.mouseInteraction) {
@@ -275,8 +285,13 @@ void main() {
       ctn.addEventListener('mouseleave', this._mouseLeaveHandler);
     }
 
-    // 把 WebGL canvas 插入 DOM，定位与原始粒子 Canvas 一致
-    const glCanvas = this.gl.canvas;
+    // 大小调整
+    this._resizeHandler = () => this._resize();
+    window.addEventListener('resize', this._resizeHandler, false);
+    this._resize();
+
+    // 把 WebGL canvas 插入 DOM
+    const glCanvas = gl.canvas;
     glCanvas.style.position = 'absolute';
     glCanvas.style.inset = '0';
     glCanvas.style.width = '100%';
@@ -289,13 +304,13 @@ void main() {
   }
 
   _resize() {
-    const ctn = this.canvas.parentElement;
+    const ctn = this.container;
     if (!ctn || !this.renderer) return;
     const scale = 1;
     this.renderer.setSize(ctn.offsetWidth * scale, ctn.offsetHeight * scale);
     if (this.program) {
       const gl = this.renderer.gl;
-      this.program.uniforms.uResolution.value = new OGL.Color(
+      this.program.uniforms.uResolution.value = new Color(
         gl.canvas.width,
         gl.canvas.height,
         gl.canvas.width / gl.canvas.height,
@@ -305,7 +320,6 @@ void main() {
 
   _animate() {
     const self = this;
-    let startTime = performance.now();
 
     function update(t) {
       self.animateId = requestAnimationFrame(update);
@@ -335,16 +349,15 @@ void main() {
     cancelAnimationFrame(this.animateId);
     window.removeEventListener('resize', this._resizeHandler);
 
-    const ctn = this.canvas.parentElement;
-    if (ctn) {
+    if (this.container) {
       if (this._mouseMoveHandler) {
-        ctn.removeEventListener('mousemove', this._mouseMoveHandler);
+        this.container.removeEventListener('mousemove', this._mouseMoveHandler);
       }
       if (this._mouseLeaveHandler) {
-        ctn.removeEventListener('mouseleave', this._mouseLeaveHandler);
+        this.container.removeEventListener('mouseleave', this._mouseLeaveHandler);
       }
-      if (this.gl && this.gl.canvas && this.gl.canvas.parentNode === ctn) {
-        ctn.removeChild(this.gl.canvas);
+      if (this.gl && this.gl.canvas && this.gl.canvas.parentNode === this.container) {
+        this.container.removeChild(this.gl.canvas);
       }
     }
 
@@ -359,5 +372,3 @@ void main() {
     this.gl = null;
   }
 }
-
-window.Galaxy = Galaxy;
