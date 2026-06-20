@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你的名字 | 敢想敢做</title>
+  <meta name="description" content="一个机械专业大一学生的个人网站。用AI、新媒体和商业思维，在普通大学里走不普通的路。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main>
+    <!-- Section 1: Hero · 追光区 -->
+    <section id="hero">
+      <canvas id="particle-canvas" aria-hidden="true"></canvas>
+      <div class="hero-content">
+        <h1 class="hero-title">敢想敢做&nbsp;活出自我</h1>
+        <p class="hero-subtitle">用AI和新媒体，在一个普通二本里搭建自己的赛道</p>
+        <a href="#works" class="hero-cta">看看我都做了什么 ↓</a>
+      </div>
+    </section>
+
+    <!-- Section 2: About · 自述区 -->
+    <section id="about">
+      <div class="section-label">01</div>
+      <div class="about-grid">
+        <div class="about-declaration">
+          <p class="declaration-line">我是一个机械专业的大一学生。</p>
+          <p class="declaration-line">但我学的是AI、新媒体、商业思维。</p>
+          <p class="declaration-line">身边没有现成的路，那就自己铺一条。</p>
+          <p class="declaration-line">我相信：我们每个人都是星辰。</p>
+          <button class="timeline-toggle" id="timeline-toggle">
+            <span class="toggle-text">展开我的时间线</span>
+            <span class="toggle-icon">+</span>
+          </button>
+        </div>
+        <div class="about-visual">
+          <div class="portrait-placeholder" id="portrait">
+            <!-- 照片或极简插画 -->
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="45" r="20" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M25 95c0-19.33 15.67-35 35-35s35 15.67 35 35" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="timeline-item">
+          <span class="timeline-date">2024.09</span>
+          <span class="timeline-event">进入武夷学院，机械专业</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">2025.03</span>
+          <span class="timeline-event">组建校园经济团队，启动抖音IP</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">2025.04</span>
+          <span class="timeline-event">抖音单条视频播放量突破8.4万</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">2025.05</span>
+          <span class="timeline-event">独立部署 Claude Code + WorkBuddy + Obsidian 工具链</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-date">2025.06</span>
+          <span class="timeline-event">搭建个人网站，开始系统化输出</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Works · 放映区 -->
+    <section id="works">
+      <div class="section-label">02</div>
+      <h2 class="section-title">作品放映室</h2>
+      <div class="works-grid">
+        <article class="work-card" id="card-particles">
+          <div class="work-card-preview">
+            <div class="work-card-placeholder">粒子手势交互网站</div>
+          </div>
+          <div class="work-card-info">
+            <h3 class="work-card-title">粒子手势交互网站</h3>
+            <p class="work-card-desc">基于手势识别的粒子动画网页，用AI辅助开发</p>
+            <a href="#" class="work-card-link">查看项目 →</a>
+          </div>
+        </article>
+        <article class="work-card" id="card-douyin">
+          <div class="work-card-preview">
+            <div class="work-card-placeholder">抖音校园IP</div>
+          </div>
+          <div class="work-card-info">
+            <h3 class="work-card-title">抖音校园IP</h3>
+            <p class="work-card-desc">不到一个月733点赞，单条视频最高8.4万播放</p>
+            <a href="#" class="work-card-link">查看主页 →</a>
+          </div>
+        </article>
+        <article class="work-card" id="card-aiart">
+          <div class="work-card-preview">
+            <div class="work-card-placeholder">AI 图像创作</div>
+          </div>
+          <div class="work-card-info">
+            <h3 class="work-card-title">AI 图像创作</h3>
+            <p class="work-card-desc">用AI工具生成的视觉作品集合</p>
+            <a href="#" class="work-card-link">浏览作品 →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Section 4: Toolkit · 兵器谱区 -->
+    <section id="toolkit">
+      <div class="section-label">03</div>
+      <h2 class="section-title">我的兵器谱</h2>
+      <div class="toolkit-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🖥</div>
+          <h3 class="tool-name">Claude Code</h3>
+          <p class="tool-desc">AI编程助手，已本地部署，日常编码伙伴</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📦</div>
+          <h3 class="tool-name">WorkBuddy</h3>
+          <p class="tool-desc">个人工作台，管理日常任务和项目</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🧠</div>
+          <h3 class="tool-name">Obsidian</h3>
+          <p class="tool-desc">知识库系统，存储和管理一切学习笔记</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔧</div>
+          <h3 class="tool-name">Codex Desktop</h3>
+          <p class="tool-desc">另一个AI工具，双引擎协作</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Footer · 星尘区 -->
+    <section id="footer">
+      <canvas id="stars-canvas" aria-hidden="true"></canvas>
+      <div class="footer-content">
+        <blockquote class="cosmic-quote">
+          <p>我们DNA里的氮元素，我们牙齿里的钙元素，我们血液里的铁元素，</p>
+          <p>还有我们吃掉的东西里的碳元素，都是曾经大爆炸时的万千星辰散落后组成的，</p>
+          <p>所以我们每个人都是星辰。</p>
+          <footer>—— 卡尔·萨根</footer>
+        </blockquote>
+        <div class="contact-links">
+          <a href="#" class="contact-link">抖音</a>
+          <a href="#" class="contact-link">邮箱</a>
+          <a href="#" class="contact-link">GitHub</a>
+        </div>
+        <p class="footer-ending">我在路上，你呢？</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/particles.js"></script>
+  <script src="js/scroll-animations.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
