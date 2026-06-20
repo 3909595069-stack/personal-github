@@ -1,18 +1,42 @@
 /* ============================================
-   particles.js — Hero 区粒子交互系统
-   鼠标移动→粒子散开
-   鼠标离开→粒子缓慢聚拢回原位
+   particles.js — Galaxy 银河背景 + Starfield 星尘
    ============================================ */
 
-class ParticleSystem {
+/* ============================================
+   Galaxy — Hero 区螺旋银河背景
+   参数对齐 React Galaxy 组件
+   ============================================ */
+
+class Galaxy {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.particles = [];
+    this.stars = [];
+
+    // 参数（对齐 React Galaxy 组件）
+    this.starSpeed = 0.5;        // 恒星沿旋臂流动速度
+    this.density = 1.4;          // 恒星密度倍数
+    this.hueShift = 140;         // 色相偏移 — 蓝
+    this.speed = 1;              // 整体速度
+    this.glowIntensity = 0.65;   // 辉光强度
+    this.saturation = 0;         // 饱和度 — 接近纯白
+    this.mouseRepulsion = true;  // 鼠标排斥
+    this.repulsionStrength = 2;  // 排斥力度
+    this.twinkleIntensity = 0.3; // 闪烁强度
+    this.rotationSpeed = 0.1;    // 旋转速度
+    this.transparent = true;     // 无背景填充
+
     this.mouse = { x: -9999, y: -9999 };
-    this.particleCount = 150;
-    this.maxRepelDist = 150;
+    this.centerX = 0;
+    this.centerY = 0;
+    this.rotation = 0;
     this.animationId = null;
+
+    // 螺旋臂参数
+    this.armCount = 4;
+    this.starCount = Math.floor(700 * this.density);
+    this.armSpread = 0.45;       // 臂间散布
+    this.twistFactor = 0.018;    // 螺旋卷曲度
 
     this._resizeHandler = this._onResize.bind(this);
     this._mouseHandler = this._onMouseMove.bind(this);
@@ -23,28 +47,26 @@ class ParticleSystem {
     canvas.addEventListener('mouseleave', this._leaveHandler);
 
     this._resize();
-    this._initParticles();
+    this._initStars();
     this._animate();
   }
 
-  /* ---- 内部方法 ---- */
+  /* ---- 布局 ---- */
 
   _resize() {
     const parent = this.canvas.parentElement;
     this.width = this.canvas.width = parent ? parent.clientWidth : window.innerWidth;
     this.height = this.canvas.height = parent ? parent.clientHeight : window.innerHeight;
+    this.centerX = this.width / 2;
+    this.centerY = this.height / 2;
   }
 
   _onResize() {
     this._resize();
-    // 粒子重新分布到新画布范围
-    for (const p of this.particles) {
-      p.baseX = Math.random() * this.width;
-      p.baseY = Math.random() * this.height;
-      p.x = p.baseX;
-      p.y = p.baseY;
-    }
+    this._initStars();
   }
+
+  /* ---- 鼠标 ---- */
 
   _onMouseMove(e) {
     this.mouse.x = e.clientX;
@@ -56,67 +78,191 @@ class ParticleSystem {
     this.mouse.y = -9999;
   }
 
-  _initParticles() {
-    this.particles = [];
-    for (let i = 0; i < this.particleCount; i++) {
-      const x = Math.random() * this.width;
-      const y = Math.random() * this.height;
-      this.particles.push({
+  /* ---- 恒星初始化 ---- */
+
+  _initStars() {
+    this.stars = [];
+    const maxRadius = Math.min(this.width, this.height) * 0.46;
+
+    for (let i = 0; i < this.starCount; i++) {
+      // 选择旋臂
+      const arm = Math.floor(Math.random() * this.armCount);
+      const armAngle = (arm / this.armCount) * Math.PI * 2 + this.rotation;
+
+      // 距离中心 — 幂分布让中心更密
+      const t = Math.random();
+      const radius = Math.pow(t, 0.55) * maxRadius + Math.random() * 20;
+
+      // 螺旋公式：角度 = 臂基础角 + 半径 * 卷曲度 + 散布
+      const angle = armAngle + radius * this.twistFactor +
+        (Math.random() - 0.5) * this.armSpread;
+
+      const x = this.centerX + Math.cos(angle) * radius;
+      const y = this.centerY + Math.sin(angle) * radius;
+
+      // 靠近中心更大更亮
+      const distRatio = radius / maxRadius;
+      const sizeFactor = 1 - distRatio * 0.6;
+      const size = (Math.random() * 2 + 0.4) * sizeFactor;
+
+      // 颜色冷暖渐变（中心暖白 → 边缘冷白）
+      const warmth = 1 - distRatio;
+
+      this.stars.push({
+        arm: arm,
+        armAngle: armAngle,
+        baseRadius: radius,
+        baseAngle: angle,
         x: x,
         y: y,
-        vx: 0,
-        vy: 0,
-        baseX: x,
-        baseY: y,
-        size: Math.random() * 2 + 0.8,
-        // 70%锐蓝 30%暖金
-        color: Math.random() < 0.7
-          ? { r: 100, g: 181, b: 246 }   // #64B5F6
-          : { r: 255, g: 183, b: 77 },    // #FFB74D
-        opacity: Math.random() * 0.5 + 0.15,
+        size: size,
+        warmth: warmth,
+        opacity: Math.random() * 0.55 + 0.45,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.025 + 0.004,
+        // 辉光（仅较大恒星）
+        hasGlow: size > 1.1 && Math.random() < 0.3,
+      });
+    }
+
+    // 添加中心"尘埃"——大量极小星点模糊成光晕
+    const dustCount = 300;
+    for (let i = 0; i < dustCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.random() * maxRadius * 0.3;
+      this.stars.push({
+        arm: -1, // 尘埃不属于任何旋臂
+        armAngle: 0,
+        baseRadius: radius,
+        baseAngle: angle,
+        x: this.centerX + Math.cos(angle) * radius,
+        y: this.centerY + Math.sin(angle) * radius,
+        size: Math.random() * 0.9 + 0.15,
+        warmth: 1,
+        opacity: Math.random() * 0.35 + 0.1,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.04 + 0.01,
+        hasGlow: false,
+        isDust: true,
       });
     }
   }
 
+  /* ---- 动画循环 ---- */
+
   _animate() {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    for (const p of this.particles) {
-      // 鼠标排斥力
-      const dx = p.x - this.mouse.x;
-      const dy = p.y - this.mouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+    // 旋转
+    this.rotation += this.rotationSpeed * 0.0008 * this.speed;
 
-      if (dist < this.maxRepelDist && dist > 0) {
-        const force = Math.pow((this.maxRepelDist - dist) / this.maxRepelDist, 2);
-        const angle = Math.atan2(dy, dx);
-        p.vx += Math.cos(angle) * force * 3;
-        p.vy += Math.sin(angle) * force * 3;
+    const maxRadius = Math.min(this.width, this.height) * 0.46;
+
+    /* ---- 中心辉光（在恒星下方）---- */
+    if (this.glowIntensity > 0) {
+      // 主辉光
+      const coreGlow = this.ctx.createRadialGradient(
+        this.centerX, this.centerY, 0,
+        this.centerX, this.centerY, maxRadius * 0.7
+      );
+      const a = this.glowIntensity * 0.18;
+      coreGlow.addColorStop(0, `rgba(170, 205, 255, ${a})`);
+      coreGlow.addColorStop(0.3, `rgba(140, 180, 240, ${a * 0.5})`);
+      coreGlow.addColorStop(0.7, `rgba(100, 140, 210, ${a * 0.1})`);
+      coreGlow.addColorStop(1, 'rgba(80, 100, 180, 0)');
+      this.ctx.fillStyle = coreGlow;
+      this.ctx.fillRect(0, 0, this.width, this.height);
+
+      // 旋臂方向额外辉光带
+      for (let a = 0; a < this.armCount; a++) {
+        const armAngle = (a / this.armCount) * Math.PI * 2 + this.rotation;
+        const armGlow = this.ctx.createRadialGradient(
+          this.centerX, this.centerY, maxRadius * 0.05,
+          this.centerX + Math.cos(armAngle) * maxRadius * 0.5,
+          this.centerY + Math.sin(armAngle) * maxRadius * 0.5,
+          maxRadius * 0.55
+        );
+        const ga = this.glowIntensity * 0.06;
+        armGlow.addColorStop(0, `rgba(160, 195, 245, ${ga})`);
+        armGlow.addColorStop(1, 'rgba(120, 160, 220, 0)');
+        this.ctx.fillStyle = armGlow;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+      }
+    }
+
+    /* ---- 绘制所有恒星 ---- */
+    for (const s of this.stars) {
+      // 螺旋运动：尘埃随机漂移，臂星沿轨道
+      let currentX, currentY;
+      if (s.isDust) {
+        // 尘埃绕中心慢慢转
+        const dustAngle = s.baseAngle + this.rotation * 0.3;
+        currentX = this.centerX + Math.cos(dustAngle) * s.baseRadius;
+        currentY = this.centerY + Math.sin(dustAngle) * s.baseRadius;
+      } else {
+        const orbitAngle = s.baseAngle + this.rotation * this.starSpeed;
+        currentX = this.centerX + Math.cos(orbitAngle) * s.baseRadius;
+        currentY = this.centerY + Math.sin(orbitAngle) * s.baseRadius;
       }
 
-      // 回归原位
-      p.vx += (p.baseX - p.x) * 0.008;
-      p.vy += (p.baseY - p.y) * 0.008;
+      // 鼠标排斥
+      if (this.mouseRepulsion) {
+        const dx = currentX - this.mouse.x;
+        const dy = currentY - this.mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const repelDist = 200;
 
-      // 阻尼
-      p.vx *= 0.94;
-      p.vy *= 0.94;
+        if (dist < repelDist && dist > 0) {
+          const force = Math.pow((repelDist - dist) / repelDist, 2)
+            * this.repulsionStrength * 100;
+          const repelAngle = Math.atan2(dy, dx);
+          currentX += Math.cos(repelAngle) * force;
+          currentY += Math.sin(repelAngle) * force;
+        }
+      }
 
-      // 更新位置
-      p.x += p.vx;
-      p.y += p.vy;
+      // 闪烁
+      s.twinkle += s.twinkleSpeed;
+      const twinkleVal = 1 - this.twinkleIntensity *
+        (0.5 + 0.5 * Math.sin(s.twinkle));
+      const opacity = Math.min(1, Math.max(0, s.opacity * twinkleVal));
 
-      // 绘制
+      // 颜色：hueShift=140 蓝调，saturation=0 接近纯白
+      // 中心微暖 → 边缘微冷
+      const baseR = 215 + s.warmth * 40;
+      const baseG = 215 + s.warmth * 30;
+      const baseB = 220 + (1 - s.warmth) * 35;
+      const r = Math.floor(baseR);
+      const g = Math.floor(baseG);
+      const b = Math.floor(baseB);
+
+      // 画星点
       this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      this.ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.opacity})`;
+      this.ctx.arc(currentX, currentY, s.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
       this.ctx.fill();
+
+      // 辉光晕
+      if (s.hasGlow && this.glowIntensity > 0) {
+        const gSize = s.size * 3.5;
+        const starGlow = this.ctx.createRadialGradient(
+          currentX, currentY, 0,
+          currentX, currentY, gSize
+        );
+        const ga = this.glowIntensity * 0.35 * opacity;
+        starGlow.addColorStop(0, `rgba(170, 205, 255, ${ga})`);
+        starGlow.addColorStop(1, 'rgba(170, 205, 255, 0)');
+        this.ctx.beginPath();
+        this.ctx.arc(currentX, currentY, gSize, 0, Math.PI * 2);
+        this.ctx.fillStyle = starGlow;
+        this.ctx.fill();
+      }
     }
 
     this.animationId = requestAnimationFrame(() => this._animate());
   }
 
-  /* ---- 公开方法 ---- */
+  /* ---- 销毁 ---- */
 
   destroy() {
     cancelAnimationFrame(this.animationId);
@@ -127,12 +273,11 @@ class ParticleSystem {
   }
 }
 
-/* 挂载到全局 */
-window.ParticleSystem = ParticleSystem;
+window.Galaxy = Galaxy;
+
 
 /* ============================================
    Starfield — Footer 星尘区缓慢飘浮背景
-   不响应鼠标，纯氛围
    ============================================ */
 
 class Starfield {
@@ -164,7 +309,6 @@ class Starfield {
 
   _onResize() {
     this._resize();
-    // Redistribute stars to new canvas bounds
     for (const s of this.stars) {
       s.x = Math.random() * this.width;
       s.y = Math.random() * this.height;
@@ -190,14 +334,12 @@ class Starfield {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     for (const s of this.stars) {
-      // 缓慢上飘 + 循环
       s.y -= s.speedY;
       if (s.y < -5) {
         s.y = this.height + 5;
         s.x = Math.random() * this.width;
       }
 
-      // 呼吸闪烁
       s.twinkle += s.twinkleSpeed;
       const currentOpacity = s.opacity * (0.5 + 0.5 * Math.sin(s.twinkle));
 

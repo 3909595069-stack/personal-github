@@ -5,12 +5,12 @@
 (function () {
   'use strict';
 
-  /* ---- Hero 粒子系统 ---- */
+  /* ---- Hero 银河背景 ---- */
   const particleCanvas = document.getElementById('particle-canvas');
-  let particleSystem = null;
+  let galaxy = null;
 
   if (particleCanvas) {
-    particleSystem = new window.ParticleSystem(particleCanvas);
+    galaxy = new window.Galaxy(particleCanvas);
   }
 
   /* ---- Footer 星空 ---- */
