@@ -157,10 +157,13 @@
     </section>
   </main>
 
-  <!-- ReactBits Galaxy 背景 (ES Module) -->
+  <!-- ReactBits Galaxy 背景 (ES Module → window.Galaxy) -->
   <script type="module">
     import Galaxy from './js/galaxy.js';
     window.Galaxy = Galaxy;
+    // module 脚本是 defer 的 —— DOM 已就绪，main.js 在 module 之后执行
+    // 触发一次自定义事件，main.js 可在此之后安全初始化
+    window.dispatchEvent(new Event('galaxy-ready'));
   </script>
   <script src="js/particles.js"></script>
   <script src="js/scroll-animations.js"></script>
