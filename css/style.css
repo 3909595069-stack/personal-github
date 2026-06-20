@@ -493,3 +493,100 @@ section.visible {
   color: var(--text-secondary);
   line-height: 1.6;
 }
+
+/* ============================================
+   Section 5: Footer · 星尘区
+   ============================================ */
+
+#footer {
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  min-height: 100vh;
+}
+
+#stars-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.footer-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+/* ---- 星辰语录 ---- */
+
+.cosmic-quote {
+  margin-bottom: var(--space-2xl);
+}
+
+.cosmic-quote p {
+  font-family: var(--font-poetic);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 2.2;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: quote-fade-in 1s var(--ease-out) forwards;
+}
+
+.cosmic-quote p:nth-child(1) { animation-delay: 0.3s; }
+.cosmic-quote p:nth-child(2) { animation-delay: 0.8s; }
+.cosmic-quote p:nth-child(3) { animation-delay: 1.3s; }
+
+.cosmic-quote footer {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: var(--space-lg);
+  opacity: 0;
+  animation: quote-fade-in 1s var(--ease-out) 1.8s forwards;
+}
+
+@keyframes quote-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- 联系链接 ---- */
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.contact-link {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.contact-link:hover {
+  color: var(--accent-gold);
+  border-bottom-color: var(--accent-gold);
+}
+
+/* ---- 底部收尾 ---- */
+
+.footer-ending {
+  font-family: var(--font-poetic);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-style: italic;
+}

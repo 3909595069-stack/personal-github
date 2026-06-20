@@ -128,3 +128,87 @@ class ParticleSystem {
 
 /* 挂载到全局 */
 window.ParticleSystem = ParticleSystem;
+
+/* ============================================
+   Starfield — Footer 星尘区缓慢飘浮背景
+   不响应鼠标，纯氛围
+   ============================================ */
+
+class Starfield {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.stars = [];
+    this.starCount = 200;
+    this.animationId = null;
+
+    this._resizeHandler = this._onResize.bind(this);
+
+    window.addEventListener('resize', this._resizeHandler);
+    this._resize();
+    this._initStars();
+    this._animate();
+  }
+
+  _resize() {
+    this.width = this.canvas.width = window.innerWidth;
+    // Footer canvas只覆盖footer section，使用其父元素高度
+    const footer = this.canvas.parentElement;
+    if (footer) {
+      this.height = this.canvas.height = footer.offsetHeight;
+    } else {
+      this.height = this.canvas.height = window.innerHeight;
+    }
+  }
+
+  _onResize() {
+    this._resize();
+  }
+
+  _initStars() {
+    this.stars = [];
+    for (let i = 0; i < this.starCount; i++) {
+      this.stars.push({
+        x: Math.random() * this.width,
+        y: Math.random() * this.height,
+        size: Math.random() * 1.5 + 0.3,
+        opacity: Math.random() * 0.6 + 0.1,
+        speedY: Math.random() * 0.15 + 0.03,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.008 + 0.002,
+      });
+    }
+  }
+
+  _animate() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    for (const s of this.stars) {
+      // 缓慢上飘 + 循环
+      s.y -= s.speedY;
+      if (s.y < -5) {
+        s.y = this.height + 5;
+        s.x = Math.random() * this.width;
+      }
+
+      // 呼吸闪烁
+      s.twinkle += s.twinkleSpeed;
+      const currentOpacity = s.opacity * (0.5 + 0.5 * Math.sin(s.twinkle));
+
+      this.ctx.beginPath();
+      this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(238, 234, 224, ${currentOpacity})`;
+      this.ctx.fill();
+    }
+
+    this.animationId = requestAnimationFrame(() => this._animate());
+  }
+
+  destroy() {
+    cancelAnimationFrame(this.animationId);
+    window.removeEventListener('resize', this._resizeHandler);
+    this.ctx.clearRect(0, 0, this.width, this.height);
+  }
+}
+
+window.Starfield = Starfield;
