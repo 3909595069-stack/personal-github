@@ -217,8 +217,11 @@ void main() {
     this._resizeHandler = () => this._resize();
     window.addEventListener('resize', this._resizeHandler, false);
 
-    // 几何体 — Triangle 覆盖全屏
-    const geometry = new OGL.Triangle(this.gl);
+    // 全屏三角形几何体 — OGL 无 Triangle 类，用 Geometry 自建
+    const geometry = new OGL.Geometry(this.gl, {
+      position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
+      uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
+    });
 
     // 程序
     this.program = new OGL.Program(this.gl, {
