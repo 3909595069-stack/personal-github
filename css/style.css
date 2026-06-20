@@ -210,3 +210,138 @@ section.visible {
   border-color: var(--accent-blue);
   box-shadow: var(--shadow-glow);
 }
+
+/* ============================================
+   Section 2: About · 自述区
+   ============================================ */
+
+#about {
+  background-color: var(--bg-deep);
+  padding-top: var(--space-2xl);
+  padding-bottom: var(--space-2xl);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xl);
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---- 宣言文字 ---- */
+
+.declaration-line {
+  font-family: var(--font-body);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.9;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  border-left: 2px solid var(--accent-blue);
+  padding-left: var(--space-lg);
+}
+
+.declaration-line:last-of-type {
+  color: var(--accent-gold);
+  font-family: var(--font-poetic);
+  font-style: italic;
+  border-left-color: var(--accent-gold);
+}
+
+/* ---- 时间线按钮 ---- */
+
+.timeline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: none;
+  border: 1px solid var(--text-muted);
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-lg);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  margin-top: var(--space-lg);
+}
+
+.timeline-toggle:hover {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow);
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.timeline-toggle.open .toggle-icon {
+  transform: rotate(45deg);
+}
+
+/* ---- 肖像占位 ---- */
+
+.portrait-placeholder {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: var(--text-muted);
+  transition: border-color var(--duration-normal) var(--ease-out);
+}
+
+.portrait-placeholder:hover {
+  border-color: var(--accent-blue);
+}
+
+.portrait-placeholder svg {
+  width: 80px;
+  height: 80px;
+}
+
+/* ---- 时间线 ---- */
+
+.timeline {
+  max-width: 600px;
+  margin: var(--space-xl) auto 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--duration-slow) var(--ease-out),
+              opacity var(--duration-normal) var(--ease-out);
+  opacity: 0;
+}
+
+.timeline.expanded {
+  max-height: 800px;
+  opacity: 1;
+}
+
+.timeline-item {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--bg-elevated);
+}
+
+.timeline-date {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-blue);
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.timeline-event {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
