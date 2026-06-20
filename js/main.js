@@ -36,12 +36,7 @@
     }
 
     /* ---- Footer 星空 ---- */
-    var starsCanvas = document.getElementById('stars-canvas');
-    var starfield = null;
-
-    if (starsCanvas && typeof window.Starfield === 'function') {
-      starfield = new window.Starfield(starsCanvas);
-    }
+    initStarfield();
 
     /* ---- 滚动动画 ---- */
     window.ScrollAnimations.init();
@@ -74,15 +69,21 @@
     }
   }
 
+  function initStarfield() {
+    var starsCanvas = document.getElementById('stars-canvas');
+    if (starsCanvas && typeof window.Starfield === 'function') {
+      new window.Starfield(starsCanvas);
+    }
+  }
+
   // ES module 脚本是 defer 的，此时 DOM 已就绪
+  // try/catch 可确保即使 Galaxy 抛错，剩余部分也能执行
   if (window.Galaxy) {
-    // Galaxy 已就绪，立即初始化
     initAll();
   } else {
-    // 等待 galaxy-ready 事件
     window.addEventListener('galaxy-ready', initAll);
   }
-  // 兜底：如果 3 秒后还没收到事件，直接初始化
+  // 兜底：3 秒后如果还没收到事件，也强制启动
   setTimeout(function () {
     if (!initialized) initAll();
   }, 3000);
