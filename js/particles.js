@@ -30,8 +30,9 @@ class ParticleSystem {
   /* ---- 内部方法 ---- */
 
   _resize() {
-    this.width = this.canvas.width = window.innerWidth;
-    this.height = this.canvas.height = window.innerHeight;
+    const parent = this.canvas.parentElement;
+    this.width = this.canvas.width = parent ? parent.clientWidth : window.innerWidth;
+    this.height = this.canvas.height = parent ? parent.clientHeight : window.innerHeight;
   }
 
   _onResize() {
@@ -151,18 +152,23 @@ class Starfield {
   }
 
   _resize() {
-    this.width = this.canvas.width = window.innerWidth;
-    // Footer canvas只覆盖footer section，使用其父元素高度
     const footer = this.canvas.parentElement;
     if (footer) {
-      this.height = this.canvas.height = footer.offsetHeight;
+      this.width = this.canvas.width = footer.clientWidth;
+      this.height = this.canvas.height = footer.clientHeight;
     } else {
+      this.width = this.canvas.width = window.innerWidth;
       this.height = this.canvas.height = window.innerHeight;
     }
   }
 
   _onResize() {
     this._resize();
+    // Redistribute stars to new canvas bounds
+    for (const s of this.stars) {
+      s.x = Math.random() * this.width;
+      s.y = Math.random() * this.height;
+    }
   }
 
   _initStars() {

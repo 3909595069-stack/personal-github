@@ -609,10 +609,13 @@ section.visible {
     gap: var(--space-xl);
   }
 
+  .about-visual {
+    order: -1; /* 照片放上面 */
+  }
+
   .portrait-placeholder {
     width: 180px;
     height: 180px;
-    order: -1; /* 照片放上面 */
   }
 
   .works-grid {
@@ -659,4 +662,17 @@ section.visible {
     flex-direction: column;
     gap: var(--space-xs);
   }
+}
+
+/* ===== 键盘焦点 ===== */
+.hero-cta:focus-visible,
+.timeline-toggle:focus-visible,
+.contact-link:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+.work-card:focus-within {
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow);
 }
